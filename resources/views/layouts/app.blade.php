@@ -13,11 +13,11 @@
     <nav class="p-6 bg-white flex justify-between mb-6">
       <ul class = "flex items-center">
             <li>             
-                <a href="" class = "p-3" >홈</a>
+                <a href="/" class = "p-3" >홈</a>
                 </li>       
         
             <li>
-                <a href="" class = "p-3">게시판</a>
+                <a href="{{route('dashboard')}}" class = "p-3">게시판</a>
             </li>
 
             <li>
@@ -27,21 +27,34 @@
       </ul>
 
       <ul class = "flex items-center">
+            @auth
             <li>             
-                <a href="" class = "p-3" >byungsoo land</a>
-                </li>       
+                <a href="" class = "p-3" >{{ auth()->user()->username }}</a>
+            </li>       
         
+      
             <li>
-                <a href="" class = "p-3">로그인</a>
+            <form action="{{route('logout')}}" method="post" class="p-3 inline">
+            @csrf
+            <button type="submit">로그아웃</button>
+            </form> 
+            </li>
+            @endauth
+
+            @guest
+            <li>
+            <a href="{{route('login')}}" class = "p-3">로그인</a>
             </li>
 
             <li>
                 <a href="{{route('register')}}" class = "p-3">회원가입</a>
             </li>
+            @endguest
 
-            <li>
-                <a href="" class = "p-3">로그아웃</a>
-            </li>
+
+         
+
+           
 
       </ul>
 

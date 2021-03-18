@@ -14,17 +14,16 @@
            <form action = "{{route('login')}}" method = "post">
                 @csrf
                 <div class = "mb-4">
-                    <label for="userid" class = "sr-only">이름</label>
-                    <input type="text" name= "userid" id="userid" placeholder = "아이디를 입력하세요"
-                    class = "bg-gray-100 border-2 w-full p-4 rounded-lg 
-                    @error('userid') border-red-500 @enderror" value="{{old('userid')}}">
-               
-                    @error('userid')
+                    <label for="email" class = "sr-only">이메일</label>
+                    <input type="text" name= "email" id="email" placeholder = "이메일을 입력하세요"
+                    class = "bg-gray-100 border-2 w-full p-4 rounded-lg
+                     @error('email') border-red-500 @enderror" value="{{old('email')}}">
+
+                    @error('email')
                         <div class="text-red-500 mt-2 text-sm">
-                            {{ "아이디를 입력하세요." }}
+                           {{ "이메일을 입력하세요." }} 
                         </div>
                     @enderror
-
                 </div>
 
 

@@ -21,7 +21,7 @@
             </li>
 
             <li>
-                <a href="" class = "p-3">포스트</a>
+                <a href="{{route('posts')}}" class = "p-3">포스트</a>
             </li>
 
       </ul>

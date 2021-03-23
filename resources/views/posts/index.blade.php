@@ -63,10 +63,12 @@
                       <div class = "flex items-center">
 
                           <form action="{{ route('posts.likes', $post->id)}}" method="post" class="mr-1">
+                          @csrf
                               <button type="submit" class = "text-pink-500">Like</button>
                           </form>
 
                           <form action="" method="post" class="mr-1">
+                          @csrf
                               <button type="submit" class = "text-pink-500">Unlike</button>
                           </form>
 

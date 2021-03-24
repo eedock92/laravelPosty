@@ -46,4 +46,5 @@ Route::post('/posts', [PostController::class, 'store']);
 
 /*좋아여 */
 Route::post('/posts/{post}/likes', [PostLikeController::class, 'store'])->name('posts.likes');
+/*싫어 */
 Route::delete('/posts/{post}/likes', [PostLikeController::class, 'destroy'])->name('posts.likes'); 

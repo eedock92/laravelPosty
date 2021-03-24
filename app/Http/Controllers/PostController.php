@@ -11,7 +11,7 @@ class PostController extends Controller
     {
 
         //게시물 페이지
-        $posts = Post::paginate(20);
+        $posts = Post::with(['user','likes'])->paginate(20);
         //$posts = Post::get();
        // dd($posts);
 

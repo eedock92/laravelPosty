@@ -23,6 +23,7 @@ Route::get('/', function() {
 })->name('home');
 
 /*게시물*/
+/* ->name('참조할 아이디 값이 됨')*/
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 /*로그아웃 */
@@ -44,4 +45,5 @@ Route::get('/posts', [PostController::class, 'index'])->name('posts');
 Route::post('/posts', [PostController::class, 'store']);
 
 /*좋아여 */
-Route::post('/posts/{id}/likes', [PostLikeController::class, 'store'])->name('posts.likes');
+Route::post('/posts/{post}/likes', [PostLikeController::class, 'store'])->name('posts.likes');
+Route::delete('/posts/{post}/likes', [PostLikeController::class, 'destroy'])->name('posts.likes'); 

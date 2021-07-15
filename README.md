@@ -1,63 +1,42 @@
-설치하기1.Composer 설치 ( 컴포저는 PHP 소프트웨어와 필요 라이브러리의 의존성을 관리하기 위한 표준 포맷을 제공하는 PHP 프로그래밍 언어의 패키지 관리자이다. )2.composer 환경변수3.laravel 설치4.설치 후 확인composer 확인C:\Users\etdow>composer   ______  / ____/___  ____ ___  ____  ____  ________  _____/ /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___// /___/ /_/ / / / / / / /_/ / /_/ (__  )  __/ /\____/\____/_/ /_/ /_/ .___/\____/____/\___/_/                    /_/Composer version 2.0.9 2021-01-27 16:09:27laravel 확인C:\Users\etdow>laravel -vLaravel Installer 4.1.1artisan 명령어라라벨에 포함되어 있는 커맨드 라인 유틸리티로 라라벨 개발을 도와 주는 명령어의 모음입니다.vscode에서 세팅laravel -v composer installnpm install실행php artisan serve다른 포트 php artisan serce --port = [포트번호]artisan .env 키설정php artisan key:generate순서routerweb.php<?phpuse Illuminate\Support\Facades\Route;/*|--------------------------------------------------------------------------| Web Routes|--------------------------------------------------------------------------|| Here is where you can register web routes for your application. These| routes are loaded by the RouteServiceProvider within a group which| contains the "web" middleware group. Now create something great!|*/Route::get('/posts', function () {    return view('posts.index');});posts -> index.blade.php@extends('layouts.app')@section('content')    Index    @endsectionlayouts -> app.blade.php<!DOCTYPE html><html lang="en"><head>    <meta charset="UTF-8">    <meta http-equiv="X-UA-Compatible" content="IE=edge">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Posty</title></head><body>    @yield('content')</body></html>css 는 https://tailwindcss.com/에서npm install tailwindcssnpm run dev라라벨 믹스 파티 시작(css, 부트스트랩)migration.envmysql table 추가 후php artisan make:migration add_username_to_users_tableㅡmigration=>  public function up()    {        Schema::table('users', function (Blueprint $table) {            //        });    }controller 생성php artisan make:controller RegisterControllerdir 생성 후php artisan make:controller Auth\\RegisterControllerregisterController.php<?phpnamespace App\Http\Controllers\Auth;use App\models\User;use Illuminate\Http\Request;use App\Http\Controllers\Controller;use Illuminate\Support\Facades\Hash;class RegisterController extends Controller{    public function index()    {        return view('auth.register');    }    public function store(Request $request)    {        $this->validate($request, [            'userid' => 'required|max:255',            'username' => 'required|max:255',            'email' => 'required|email|max:255',            'password' => 'required|confirmed',        ]);        User::create([            'userid' => $request->userid,            'username' => $request->username,            'email' => $request->email,            'password' => Hash::make($request->password),        ]);        //return redirect()->route();                //dd('abc');        //store user        //sign the user in        //redirection    }}web.php해당 컨트롤러를 import 해주자<?phpuse Illuminate\Support\Facades\Route;use App\Http\Controllers\Auth\RegisterController;/*|--------------------------------------------------------------------------| Web Routes|--------------------------------------------------------------------------|| Here is where you can register web routes for your application. These| routes are loaded by the RouteServiceProvider within a group which| contains the "web" middleware group. Now create something great!|*/Route::get('/register', [RegisterController::class, 'index'])->name('register');Route::post('/register', [RegisterController::class, 'store']);Route::get('/posts', function () {    return view('posts.index');});views -> auth -> register.blade.php@extends('layouts.app')@section('content')    <div class ="flex justify-center">        <div class="w-6/12 shadow-xl bg-white p-6  rounded-lg">            Register           <form action = "{{route('register')}}" method = "post">                @csrf                <div class = "mb-4">                    <label for="userid" class = "sr-only">이름</label>                    <input type="text" name= "userid" id="userid" placeholder = "아이디를 입력하세요"                    class = "bg-gray-100 border-2 w-full p-4 rounded-lg                    @error('userid') border-red-500 @enderror" value="{{old('userid')}}">                                   @error('userid')                        <div class="text-red-500 mt-2 text-sm">                            {{ "아이디를 입력하세요." }}                        </div>                    @enderror                </div>                <div class = "mb-4">                    <label for="username" class = "sr-only">아이디</label>                    <input type="text" name= "username" id="username" placeholder = "이름을 입력하세요"                    class = "bg-gray-100 border-2 w-full p-4 rounded-lg                    @error('username') border-red-500 @enderror" value="{{old('username')}}">                    @error('username')                        <div class="text-red-500 mt-2 text-sm">                            {{ "이름을 입력하세요." }}                        </div>                    @enderror                </div>                <div class = "mb-4">                    <label for="email" class = "sr-only">이메일</label>                    <input type="text" name= "email" id="email" placeholder = "이메일을 입력하세요"                    class = "bg-gray-100 border-2 w-full p-4 rounded-lg                     @error('email') border-red-500 @enderror" value="{{old('email')}}">                    @error('email')                        <div class="text-red-500 mt-2 text-sm">                           {{ "이메일을 입력하세요." }}                        </div>                    @enderror                </div>                <div class = "mb-4">                    <label for="password" class = "sr-only">비밀번호</label>                    <input type="password" name= "password" id="password" placeholder = "비밀번호를 입력하세요"                    class = "bg-gray-100 border-2 w-full p-4 rounded-lg                    @error('password') border-red-500 @enderror" value="">                                   @error('password')                        <div class="text-red-500 mt-2 text-sm">                           {{ $message }}                        </div>                    @enderror                                              </div>                <div class = "mb-4">                    <label for="password_confirmation" class = "sr-only">비밀번호 재확인</label>                    <input type="password" name= "password_confirmation" id="password_confirmation" placeholder = "비밀번호를 한번  더 입력하세요"                    class = "bg-gray-100 border-2 w-full p-4 rounded-lg                    " value="">                                                                                </div>                <div>                    <button type="submit" class="bg-blue-500 text-white px-4 py-3 rounded                    font-medium w-full">등록하기</button>                </div>                           </form>        </div>@endsection생성--03.18--모델 생성 php artisan make:modle Post뒤에 옵션을 붙일 수 있다php artisan make:model Post --help참조Options:  -a, --all             Generate a migration, seeder, factory, and resource controller for the model  -c, --controller      Create a new controller for the model  -f, --factory         Create a new factory for the model      --force           Create the class even if the model already exists  -m, --migration       Create a new migration file for the model  -s, --seed            Create a new seeder file for the model  -p, --pivot           Indicates if the generated model should be a custom intermediate table model  -r, --resource        Indicates if the generated controller should be a resource controller      --api             Indicates if the generated controller should be an API controller  -h, --help            Display help for the given command. When no command is given display help for the list command  -q, --quiet           Do not output any message  -V, --version         Display this application version      --ansi            Force ANSI output      --no-ansi         Disable ANSI output  -n, --no-interaction  Do not ask any interactive question      --env[=ENV]       The environment the command should run under  -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug실습php artisan make:model Post -m -fuser_id 컬럼을 추가 한다, delete cascade도 추가한다database -> migrations ->    public function up()    {        Schema::create('posts', function (Blueprint $table) {            $table->id();            $table->Integer('user_id')->unsigned()->index();                        $table->foreignId('user_id')->constrained()->onDelete('cascade');            $table->text('body');            $table->timestamps(); //create column, updated column        });    }User.php   public function posts()    {        return $this->hasMany(Post::class);    }post.php<?phpnamespace App\Models;use Illuminate\Database\Eloquent\Factories\HasFactory;use Illuminate\Database\Eloquent\Model;class Post extends Model{    use HasFactory;    protected $fillable = [        'body'    ];}==>fillable은 대량 할당 Mass Assignmentcreate 메소드를 통해 한 줄에서postController.php     public function store(Request $request)    {        $this->validate($request, [            'body' => 'required'        ]);       $request->user()->posts()->create([           'body' => $request->body       ]);       return back();    }공식홈페이지 참조https://laravel.kr/docs/5.7/eloquent결과유저의 게시물 post.php  public function user()    {        return $this->belongsTo(User::class);    }게시물 페이지네이션PostController.phppublic function index()    {  $posts = Post::paginate(2); //추가대량 추가하기App\Models\Post::factory()->times(200)->create(['user_id' => 3]);좋아요/안좋아요 추가index.blade.php<div class = "flex items-center">                          <form action="" method="post" class="mr-1">                                @csrf                              <button type="submit" class = "text-pink-500">Like</button>                          </form>                          <form action="" method="post" class="mr-1">                                @csrf                              <button type="submit" class = "text-pink-500">Unlike</button>                          </form>                      </div>※ @csrf 추가 해야지 419 error가 안나타남.migrationphp artisan make:migration create_likes_table --create=likesmigrations 폴더에서   public function up()    {        Schema::create('likes', function (Blueprint $table) {            $table->id();            $table->foreignId('user_id')->constrained()->onDelete('cascade');            $table->foreignId('post_id')->constrained()->onDelete('cascade');            $table->timestamps();        });    }model에 Like.php 만든다.php artisan make:model LikeLike.php<?phpnamespace App\Models;use Illuminate\Database\Eloquent\Factories\HasFactory;use Illuminate\Database\Eloquent\Model;class Like extends Model{    use HasFactory;    protected $fillable = [        'user_id'    ];}=> 누가 Like를 했는지 user_id 값을 가진다.post.phppublic function likes()    {        return $this->hasMany(Like::class);    }user.phppublic function likes()    {        return $this->hasMany(Like::class);    }web.php/*좋아여 */Route::post('/posts/{id}/likes', [PostLikeController::class, 'store'])->name('posts.likes');index.blade.php에서 좋아요 action 추가  <form action="{{ route('posts.likes', $post)}}" method="post" class="mr-1">                                @csrf                              <button type="submit" class = "text-pink-500">Like</button>                          </form>사용자는 한번만 Like 해야됨.Post.php에서public function likedBy(User $user)    {        return $this->Likes->contains('user_id', $user->id);    }PostLikeController.php    public function store(Post $post, Request $request)    {                if($post->LikedBy($request->user())){            return response(null, 409); //conflict        }==> 409로 막아서 한번만 해도 되지만더 좋은 방법은     <div class = "flex items-center">                        @if(!$post->likedBy(auth()->user()))                          <form action="{{ route('posts.likes', $post)}}" method="post" class="mr-1">                          @csrf                              <button type="submit" class = "text-pink-500">Like</button>                          </form>                        @else                          <form action="{{ route('posts.likes', $post)}}" method="post" class="mr-1">                          @csrf                          @method('DELETE')                              <button type="submit" class = "text-pink-500">Unlike</button>                          </form>                        @endif                          <span> {{$post->likes->count()}}                            {{ Str::plural('like', $post->likes->count())}}                          </span>                      </div>한번도 Like도 안했으면 Like 했으면 Unlike를 보여줌.dislikedislike -> delete -> mysql -> delete likeweb.php에 추가Route::delete('/posts/{post}/likes', [PostLikeController::class, 'destroy'])->name('posts.likes');PostLikeController.php   public function destroy(Post $post, Request $request)    {        $request->user()->likes()->where('post_id', $post->id)->delete();        return back();    }index.blade.php     <form action="{{ route('posts.likes', $post)}}" method="post" class="mr-1">                          @csrf                          @method('DELETE')                              <button type="submit" class = "text-pink-500">Unlike</button>                          </form>=> action에는 post 형식으로 적고@method('DELETE') 추가Eager loadingLaravel의 Debugbar를 추가해보자composer require barryvdh/laravel-debugbar --dev라라벨 디버그가 하단에 배치PostController.phppublic function index()    {        //게시물 페이지        $posts = Post::with(['user','likes'])->paginate(20);post는 user와 like로 구성사용전 $posts = Post::paginate(20);사용후$posts = Post::with(['user','likes'])->paginate(20);=> likes poist_id in으로 조회정책 만들기 
-	* 다른 사람의 게시물 삭제 금지
+### laravel board ###
 
-php artisan make:policy PostPolicy
-Controller -> policies -> PostPolicy.php
-
-<?php
-
-
-namespace App\Policies;
-
-
-use App\Models\Post;
-use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
+# 기능 소개
+  ● 로그인, 아이디 기억하기 기능
+  ● 회원가입
+  ● 게시글 
+  ● 게시글 좋아요/싫어요 기능
+  ● 게시글 삭제
+  
+  
+# 페이지 소개
 
 
-class PostPolicy
-{
-    use HandlesAuthorization;
+1. 로그인 
+![로그인화면](https://user-images.githubusercontent.com/37561568/125782471-21c744c0-29e2-4d5f-a338-2ac95e823cf5.JPG)
+
+아이디 기억하기 기능
+![ScreenClip](https://user-images.githubusercontent.com/37561568/125783182-a83beb6a-b158-4db4-b838-1c1e6fcef6ec.png)
 
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
+2. 회원가입
+![회원가입](https://user-images.githubusercontent.com/37561568/125782545-87328b39-f72d-452c-b18e-5eef11ae70cb.png)
 
 
-       public function delete(User $user, Post $post)
-       {
-            return $user->id === $post->user_id;
-       }
-    
-}
+3.메인 (로그인 전)
+![laravelboard](https://user-images.githubusercontent.com/37561568/125781854-f50cbc1a-151c-4d9f-a2e0-a3df81020dea.JPG)
+
+
+4.메인 (로그인 후)
+![로그인후](https://user-images.githubusercontent.com/37561568/125782228-acbd3ccc-908c-4b4e-8fd3-2ed0cf440c76.png)
+
+
+5.게시판
+![laravelDashboard](https://user-images.githubusercontent.com/37561568/125782398-7289aae3-8a5e-4e30-a090-88a55f5696a5.JPG)
 
 
 
-providers -> AuthServiceProvider.php
 
-use App\Models\Post;
-use App\Policies\PostPolicy;
-
-   protected $policies = [
-        Post::class => PostPolicy::class,
-    ];
-
-
-마지막으로 index.blade.php에서
-
-@can('delete', $post)
-      <form action="{{route('posts.destroy', $post)}}" method = "post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-pink-500">Delete</button>
-                                </form>
-@endcan
-하면 다른 사용자의 delete 버튼은 안보이게 됨.
-
-email 기능
-https://mailtrap.io/
-
-SMTP / POP3에 Username을 .env 에 추가
+  
+  
+  
+  
